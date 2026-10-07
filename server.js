@@ -7,26 +7,50 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// API to fetch popular stations dynamically from DB API on page load
+// Reliable Default Stations (Guaranteed Fallback)
+const defaultStations = [
+    { id: "8011160", name: "Berlin Hbf" },
+    { id: "8000261", name: "München Hbf" },
+    { id: "8000105", name: "Frankfurt (Main) Hbf" },
+    { id: "8000254", name: "Hamburg Hbf" },
+    { id: "8000207", name: "Köln Hbf" },
+    { id: "8000191", name: "Stuttgart Hbf" },
+    { id: "8000085", name: "Düsseldorf Hbf" },
+    { id: "8000080", name: "Dortmund Hbf" },
+    { id: "8000096", name: "Essen Hbf" },
+    { id: "8000222", name: "Leipzig Hbf" }
+];
+
+// API to fetch popular stations
 app.get('/api/popular-stations', async (req, res) => {
-    const popularQueries = ["Berlin Hbf", "München Hbf", "Frankfurt (Main) Hbf", "Hamburg Hbf", "Köln Hbf", "Stuttgart Hbf", "Düsseldorf Hbf", "Dortmund Hbf", "Essen Hbf", "Leipzig Hbf"];
-    
     try {
+        const popularQueries = ["Berlin Hbf", "München Hbf", "Frankfurt (Main) Hbf", "Hamburg Hbf", "Köln Hbf", "Stuttgart Hbf", "Düsseldorf Hbf", "Dortmund Hbf", "Essen Hbf", "Leipzig Hbf"];
         const stationList = [];
+        
         for (const query of popularQueries) {
-            const response = await fetch(`https://v6.db.transport.rest/locations?query=${encodeURIComponent(query)}&results=1`);
-            const data = await response.json();
-            if (data && data.length > 0 && data[0].type === 'station') {
-                stationList.push({
-                    id: data[0].id,
-                    name: data[0].name
-                });
+            try {
+                const response = await fetch(`https://v6.db.transport.rest/locations?query=${encodeURIComponent(query)}&results=1`, { timeout: 2000 });
+                const data = await response.json();
+                if (data && data.length > 0 && data[0].type === 'station') {
+                    stationList.push({
+                        id: data[0].id,
+                        name: data[0].name
+                    });
+                }
+            } catch (err) {
+                // Ignore individual fetch error and continue
             }
         }
+
+        // If live fetch fails or returns empty, use default backup list
+        if (stationList.length === 0) {
+            return res.json(defaultStations);
+        }
+
         res.json(stationList);
     } catch (error) {
         console.error('Error fetching popular stations:', error);
-        res.status(500).json({ error: 'Failed to fetch stations' });
+        res.json(defaultStations); // Fallback to safe list on error
     }
 });
 
