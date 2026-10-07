@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB ရ ကောက် ရထားကြီး ပျော်ပျော်စီး</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes moveTrain {
+            0% {
+                transform: translateX(-150px);
+            }
+            100% {
+                transform: translateX(calc(100vw + 150px));
+            }
+        }
+        .animate-train {
+            animation: moveTrain 12s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans text-slate-800">
+
+    <!-- Header Section -->
+    <header class="bg-red-600 text-white shadow-md py-6 px-4 text-center relative overflow-hidden">
+        <h1 class="text-3xl md:text-4xl font-extrabold tracking-wide mb-1">🚂 DB ရ ကောက် ရထားကြီး ပျော်ပျော်စီး</h1>
+        <p class="text-red-100 text-sm md:text-base">ဂျာမနီနိုင်ငံအတွင်း အမြန်ဆုံးနှင့် ဈေးအသက်သာဆုံး ရထားခရီးစဉ် ရှာစက်</p>
+
+        <!-- Animated Bullet Train Track & Train (Facing Left-to-Right correctly, No Text, Sleek ICE Style) -->
+        <div class="w-full h-12 relative overflow-hidden mt-4 border-b border-red-500/50">
+            <!-- Train Track Lines -->
+            <div class="absolute bottom-1 w-full h-[2px] bg-red-300/40"></div>
+            <div class="absolute bottom-2 w-full h-[1px] bg-red-400/20"></div>
+
+            <!-- Sleek Bullet Train (ICE Style) -->
+            <div class="absolute bottom-1.5 left-0 animate-train flex items-center">
+                <!-- Train Body Structure -->
+                <svg width="130" height="26" viewBox="0 0 130 26" fill="none" xmlns="http://www.w3.org/2000/svg" class="filter drop-shadow-md">
+                    <!-- Nose / Front Cockpit (Pointing Right) -->
+                    <path d="M128 14C120 14 105 15 95 16L75 16L75 6L95 6C105 7 120 8 128 8C130 8 131 10 130 11C129 12 129 13 128 14Z" fill="#F1F5F9"/>
+                    <path d="M128 11C121 11 110 12 100 13L75 13L75 9L100 9C110 10 121 11 128 11Z" fill="#E2E8F0"/>
+                    
+                    <!-- Main Body Coaches -->
+                    <rect x="10" y="5" width="65" height="12" rx="2" fill="#F8FAFC"/>
+                    <rect x="10" y="15" width="65" height="5" rx="1" fill="#CBD5E1"/>
+
+                    <!-- Red Stripe (ICE Signature) -->
+                    <path d="M10 9H125V11H10V9Z" fill="#DC2626"/>
+
+                    <!-- Windshield / Cabin Windows -->
+                    <path d="M105 8C112 8.5 120 9.5 126 10.5C126 10.5 120 12 105 12.5V8Z" fill="#1E293B"/>
+
+                    <!-- Passenger Windows Strip -->
+                    <rect x="15" y="7" width="55" height="2.5" rx="1" fill="#334155"/>
+
+                    <!-- Wheels -->
+                    <circle cx="22" cy="21" r="3" fill="#334155"/>
+                    <circle cx="22" cy="21" r="1.5" fill="#94A3B8"/>
+                    <circle cx="55" cy="21" r="3" fill="#334155"/>
+                    <circle cx="55" cy="21" r="1.5" fill="#94A3B8"/>
+                    <circle cx="100" cy="21" r="3" fill="#334155"/>
+                    <circle cx="100" cy="21" r="1.5" fill="#94A3B8"/>
+
+                    <!-- Connector to Rear -->
+                    <rect x="5" y="7" width="5" height="10" fill="#475569"/>
+                </svg>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-4xl w-full mx-auto p-4 md:p-6 flex-grow">
+        
+        <!-- Search Card -->
+        <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-slate-100">
+            <h2 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                <span>🔍</span> ခရီးစဉ်ရှာဖွေရန်
+            </h2>
+
+            <form id="searchForm" class="space-y-6">
+                
+                <!-- From and To Dropdowns -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">စတင်မည့်မြို့ (From)</label>
+                        <select id="fromCity" class
