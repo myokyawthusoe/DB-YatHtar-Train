@@ -7,29 +7,36 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// Station ID Mapping
-const stationIds = {
-    "Berlin": "8011160",
-    "München": "8000261",
-    "Frankfurt": "8000105",
-    "Hamburg": "8000254",
-    "Köln": "8000207",
-    "Stuttgart": "8000191",
-    "Düsseldorf": "8000085",
-    "Dortmund": "8000080",
-    "Essen": "8000096",
-    "Leipzig": "8000222"
-};
+// 1. API to search stations dynamically from DB
+app.get('/api/stations', async (req, res) => {
+    const query = req.query.q;
+    if (!query) return res.json([]);
 
-// API Endpoint to fetch real data
+    try {
+        const response = await fetch(`https://v6.db.transport.rest/locations?query=${encodeURIComponent(query)}&results=5`);
+        const data = await response.json();
+        
+        // Filter only stations (type === 'station')
+        const stations = data
+            .filter(item => item.type === 'station' && item.id)
+            .map(item => ({
+                id: item.id,
+                name: item.name
+            }));
+
+        res.json(stations);
+    } catch (error) {
+        console.error('Station Search Error:', error);
+        res.status(500).json({ error: 'Failed to fetch stations' });
+    }
+});
+
+// 2. API to search real journeys
 app.get('/api/search', async (req, res) => {
-    const { from, to } = req.query;
-
-    const fromId = stationIds[from];
-    const toId = stationIds[to];
+    const { fromId, toId } = req.query;
 
     if (!fromId || !toId) {
-        return res.status(400).json({ error: 'Invalid stations provided' });
+        return res.status(400).json({ error: 'Station IDs are required' });
     }
 
     try {
@@ -69,5 +76,5 @@ app.get('/api/search', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`db-yathtar-train server is running on port ${PORT}`);
 });
