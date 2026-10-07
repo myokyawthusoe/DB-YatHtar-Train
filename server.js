@@ -7,8 +7,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// Reliable Default Stations (Guaranteed Fallback)
-const defaultStations = [
+// Instant and reliable DB stations with official IDs
+const stationsList = [
     { id: "8011160", name: "Berlin Hbf" },
     { id: "8000261", name: "München Hbf" },
     { id: "8000105", name: "Frankfurt (Main) Hbf" },
@@ -21,37 +21,9 @@ const defaultStations = [
     { id: "8000222", name: "Leipzig Hbf" }
 ];
 
-// API to fetch popular stations
-app.get('/api/popular-stations', async (req, res) => {
-    try {
-        const popularQueries = ["Berlin Hbf", "München Hbf", "Frankfurt (Main) Hbf", "Hamburg Hbf", "Köln Hbf", "Stuttgart Hbf", "Düsseldorf Hbf", "Dortmund Hbf", "Essen Hbf", "Leipzig Hbf"];
-        const stationList = [];
-        
-        for (const query of popularQueries) {
-            try {
-                const response = await fetch(`https://v6.db.transport.rest/locations?query=${encodeURIComponent(query)}&results=1`, { timeout: 2000 });
-                const data = await response.json();
-                if (data && data.length > 0 && data[0].type === 'station') {
-                    stationList.push({
-                        id: data[0].id,
-                        name: data[0].name
-                    });
-                }
-            } catch (err) {
-                // Ignore individual fetch error and continue
-            }
-        }
-
-        // If live fetch fails or returns empty, use default backup list
-        if (stationList.length === 0) {
-            return res.json(defaultStations);
-        }
-
-        res.json(stationList);
-    } catch (error) {
-        console.error('Error fetching popular stations:', error);
-        res.json(defaultStations); // Fallback to safe list on error
-    }
+// API to provide stations instantly
+app.get('/api/popular-stations', (req, res) => {
+    res.json(stationsList);
 });
 
 // API to search real journeys
@@ -99,5 +71,5 @@ app.get('/api/search', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`db-yathtar-train server is running on port ${PORT}`);
+    console.log(`db-yathtar-train (Beta V1.0.7) server is running on port ${PORT}`);
 });
