@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB ရ ကောက် ရထားကြီး ပျော်ပျော်စီး</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes moveTrain {
+            0% { transform: translateX(-150px); }
+            100% { transform: translateX(calc(100vw + 150px)); }
+        }
+        .animate-train {
+            animation: moveTrain 12s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans text-slate-800">
+
+    <header class="bg-red-600 text-white shadow-md py-6 px-4 text-center relative overflow-hidden">
+        <h1 class="text-3xl md:text-4xl font-extrabold tracking-wide mb-1">🚂 DB ရ ကောက် ရထားကြီး ပျော်ပျော်စီး</h1>
+        <p class="text-red-100 text-sm md:text-base">Backend & Frontend Split Architecture (Live API)</p>
+    </header>
+
+    <main class="max-w-4xl w-full mx-auto p-4 md:p-6 flex-grow">
+        <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-slate-100">
+            <form id="searchForm" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">စတင်မည့်မြို့ (From)</label>
+                        <select id="fromCity" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-red-500">
+                            <option value="">မြို့ရွေးချယ်ပါ</option>
+                            <option value="Berlin">Berlin</option>
+                            <option value="München">München</option>
+                            <option value="Frankfurt">Frankfurt</option>
+                            <option value="Hamburg">Hamburg</option>
+                            <option value="Köln">Köln</option>
+                            <option value="Stuttgart">Stuttgart</option>
+                            <option value="Düsseldorf">Düsseldorf</option>
+                            <option value="Dortmund">Dortmund</option>
+                            <option value="Essen">Essen</option>
+                            <option value="Leipzig">Leipzig</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">ရောက်ရှိမည့်မြို့ (To)</label>
+                        <select id="toCity" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-red-500">
+                            <option value="">မြို့ရွေးချယ်ပါ</option>
+                            <option value="Berlin">Berlin</option>
+                            <option value="München">München</option>
+                            <option value="Frankfurt">Frankfurt</option>
+                            <option value="Hamburg">Hamburg</option>
+                            <option value="Köln">Köln</option>
+                            <option value="Stuttgart">Stuttgart</option>
+                            <option value="Düsseldorf">Düsseldorf</option>
+                            <option value="Dortmund">Dortmund</option>
+                            <option value="Essen">Essen</option>
+                            <option value="Leipzig">Leipzig</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 pt-1">
+                    <input type="checkbox" id="directOnly" class="w-4 h-4 text-red-600 rounded border-slate-300">
+                    <label for="directOnly" class="text-sm font-medium text-slate-700 cursor-pointer">Direct only (တိုက်ရိုက်ခရီးစဉ်များသာ)</label>
+                </div>
+
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition">
+                    🚀 Live API ဖြင့် ရှာမည်
+                </button>
+            </form>
+        </div>
+
+        <div id="loadingIndicator" class="mt-8 hidden text-center py-10">
+            <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-red-600 border-t-transparent"></div>
+            <p class="text-slate-500 mt-3 text-sm">Backend ဆာဗာမှတစ်ဆင့် ဒေတာဆွဲနေပါပြီ...</p>
+        </div>
+
+        <div id="resultsSection" class="mt-8 hidden space-y-4">
+            <h3 class="text-lg font-bold text-slate-800 border-b pb-2 flex items-center justify-between">
+                <span>🎫 ရလဒ်များ</span>
+                <span id="resultCount" class="text-xs bg-red-100 text-red-600 px-2.5 py-1 rounded-full font-semibold"></span>
+            </h3>
+            <div id="resultsList" class="space-y-4"></div>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const from = document.getElementById('fromCity').value;
+            const to = document.getElementById('toCity').value;
+            const directOnly = document.getElementById('directOnly').checked;
+
+            if(!from || !to || from === to) {
+                alert('မြို့အမည်များကို မှန်ကန်စွာ ရွေးချယ်ပေးပါရှင်။');
+                return;
+            }
+
+            const resultsSection = document.getElementById('resultsSection');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const resultsList = document.getElementById('resultsList');
+            const resultCount = document.getElementById('resultCount');
+
+            resultsSection.classList.add('hidden');
+            loadingIndicator.classList.remove('hidden');
+            resultsList.innerHTML = '';
+
+            try {
+                // Call our own Backend API
+                const res = await fetch(`/api/search?from=${from}&to=${to}`);
+                const journeys = await res.json();
+
+                loadingIndicator.classList.add('hidden');
+                resultsSection.classList.remove('hidden');
+
+                let filtered = directOnly ? journeys.filter(j => j.changes === 'Direct') : journeys;
+                resultCount.textContent = `${filtered.length} ခု တွေ့ရှိသည်`;
+
+                if(filtered.length === 0) {
+                    resultsList.innerHTML = `<div class="p-6 bg-white rounded-xl text-center text-slate-500 shadow-sm">ခရီးစဉ် မတွေ့ရှိပါ။</div>`;
+                    return;
+                }
+
+                filtered.forEach(res => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-white rounded-xl shadow-sm hover:shadow-md transition p-5 border border-slate-200 flex justify-between items-center';
+                    card.innerHTML = `
+                        <div>
+                            <span class="text-xs font-bold px-2 py-0.5 bg-red-100 text-red-700 rounded">${res.type}</span>
+                            <div class="text-lg font-bold text-slate-800 mt-1">${res.dep} ➔ ${res.arr}</div>
+                            <div class="text-xs text-slate-500">ကြာချိန်: ${res.duration} | ${res.changes}</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-extrabold text-red-600">€${res.price}</div>
+                            <a href="https://www.bahn.com" target="_blank" class="text-xs bg-red-600 text-white px-3 py-1.5 rounded-lg mt-1 inline-block">ဝယ်ရန် ↗</a>
+                        </div>
+                    `;
+                    resultsList.appendChild(card);
+                });
+            } catch (err) {
+                loadingIndicator.classList.add('hidden');
+                alert('ဆာဗာချိတ်ဆက်မှု အမှားရှိနေပါသည်။');
+            }
+        });
+    </script>
+</body>
+</html>
