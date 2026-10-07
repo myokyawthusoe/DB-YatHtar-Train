@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>db-yathtar-train - ဂျာမနီရထားခရီးစဉ်ရှာစက်</title>
+    <title>db-yathtar-train (Beta V1.0.7) - ဂျာမနီရထားခရီးစဉ်ရှာစက်</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @keyframes moveTrain {
@@ -19,6 +19,10 @@
 
     <!-- Header with Moving Train Animation -->
     <header class="bg-red-600 text-white shadow-md py-6 px-4 text-center relative overflow-hidden">
+        <div class="absolute top-3 right-4 bg-red-700/80 text-red-100 text-xs font-semibold px-2.5 py-1 rounded-full border border-red-500/50">
+            Beta V1.0.7
+        </div>
+        
         <h1 class="text-3xl md:text-4xl font-extrabold tracking-wide mb-1">🚂 db-yathtar-train</h1>
         <p class="text-red-100 text-sm md:text-base">ဂျာမနီနိုင်ငံအတွင်း ရထားခရီးစဉ်များကို စိတ်ချမ်းသာစွာ ရွေးချယ်ရှာဖွေပါ</p>
 
@@ -106,7 +110,7 @@
     </main>
 
     <footer class="mt-auto py-6 text-center text-xs text-slate-500 border-t border-slate-200 space-y-1">
-        <p>🚂 db-yathtar-train • All rights reserved.</p>
+        <p>🚂 db-yathtar-train (Beta V1.0.7) • All rights reserved.</p>
     </footer>
 
     <script>
@@ -141,3 +145,18 @@
             const fromId = document.getElementById('fromSelect').value;
             const toId = document.getElementById('toSelect').value;
             const ticketType = document.getElementById('ticketType').value;
+            const directOnly = document.getElementById('directOnly').checked;
+
+            if (!fromId || !toId) {
+                alert('ကျေးဇူးပြု၍ စတင်မည့်စတေရှင်နှင့် ရောက်ရှိမည့်စတေရှင်ကို ရွေးချယ်ပေးပါရှင်။');
+                return;
+            }
+
+            if (fromId === toId) {
+                alert('စတင်မည့်နေရာနှင့် ရောက်ရှိမည့်နေရာ တူမနေရပါရှင်။');
+                return;
+            }
+
+            const resultsSection = document.getElementById('resultsSection');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const resultsList
