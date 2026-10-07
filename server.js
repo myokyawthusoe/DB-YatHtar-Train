@@ -7,31 +7,30 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// 1. API to search stations dynamically from DB
-app.get('/api/stations', async (req, res) => {
-    const query = req.query.q;
-    if (!query) return res.json([]);
-
+// API to fetch popular stations dynamically from DB API on page load
+app.get('/api/popular-stations', async (req, res) => {
+    const popularQueries = ["Berlin Hbf", "München Hbf", "Frankfurt (Main) Hbf", "Hamburg Hbf", "Köln Hbf", "Stuttgart Hbf", "Düsseldorf Hbf", "Dortmund Hbf", "Essen Hbf", "Leipzig Hbf"];
+    
     try {
-        const response = await fetch(`https://v6.db.transport.rest/locations?query=${encodeURIComponent(query)}&results=5`);
-        const data = await response.json();
-        
-        // Filter only stations (type === 'station')
-        const stations = data
-            .filter(item => item.type === 'station' && item.id)
-            .map(item => ({
-                id: item.id,
-                name: item.name
-            }));
-
-        res.json(stations);
+        const stationList = [];
+        for (const query of popularQueries) {
+            const response = await fetch(`https://v6.db.transport.rest/locations?query=${encodeURIComponent(query)}&results=1`);
+            const data = await response.json();
+            if (data && data.length > 0 && data[0].type === 'station') {
+                stationList.push({
+                    id: data[0].id,
+                    name: data[0].name
+                });
+            }
+        }
+        res.json(stationList);
     } catch (error) {
-        console.error('Station Search Error:', error);
+        console.error('Error fetching popular stations:', error);
         res.status(500).json({ error: 'Failed to fetch stations' });
     }
 });
 
-// 2. API to search real journeys
+// API to search real journeys
 app.get('/api/search', async (req, res) => {
     const { fromId, toId } = req.query;
 
