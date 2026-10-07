@@ -27,7 +27,7 @@
         <h1 class="text-3xl md:text-4xl font-extrabold tracking-wide mb-1">🚂 DB ရ ကောက် ရထားကြီး ပျော်ပျော်စီး</h1>
         <p class="text-red-100 text-sm md:text-base">ဂျာမနီနိုင်ငံအတွင်း အမြန်ဆုံးနှင့် ဈေးအသက်သာဆုံး ရထားခရီးစဉ် ရှာစက်</p>
 
-        <!-- Animated Bullet Train Track & Train (Facing Left-to-Right correctly, No Text, Sleek ICE Style) -->
+        <!-- Animated Bullet Train Track & Train -->
         <div class="w-full h-12 relative overflow-hidden mt-4 border-b border-red-500/50">
             <!-- Train Track Lines -->
             <div class="absolute bottom-1 w-full h-[2px] bg-red-300/40"></div>
@@ -35,7 +35,6 @@
 
             <!-- Sleek Bullet Train (ICE Style) -->
             <div class="absolute bottom-1.5 left-0 animate-train flex items-center">
-                <!-- Train Body Structure -->
                 <svg width="130" height="26" viewBox="0 0 130 26" fill="none" xmlns="http://www.w3.org/2000/svg" class="filter drop-shadow-md">
                     <!-- Nose / Front Cockpit (Pointing Right) -->
                     <path d="M128 14C120 14 105 15 95 16L75 16L75 6L95 6C105 7 120 8 128 8C130 8 131 10 130 11C129 12 129 13 128 14Z" fill="#F1F5F9"/>
@@ -84,4 +83,57 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-2">စတင်မည့်မြို့ (From)</label>
-                        <select id="fromCity" class
+                        <select id="fromCity" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            <option value="">မြို့ရွေးချယ်ပါ</option>
+                            <option value="Berlin">Berlin</option>
+                            <option value="München">München (Munich)</option>
+                            <option value="Frankfurt">Frankfurt am Main</option>
+                            <option value="Hamburg">Hamburg</option>
+                            <option value="Köln">Köln (Cologne)</option>
+                            <option value="Stuttgart">Stuttgart</option>
+                            <option value="Düsseldorf">Düsseldorf</option>
+                            <option value="Dortmund">Dortmund</option>
+                            <option value="Essen">Essen</option>
+                            <option value="Leipzig">Leipzig</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">ရောက်ရှိမည့်မြို့ (To)</label>
+                        <select id="toCity" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            <option value="">မြို့ရွေးချယ်ပါ</option>
+                            <option value="Berlin">Berlin</option>
+                            <option value="München">München (Munich)</option>
+                            <option value="Frankfurt">Frankfurt am Main</option>
+                            <option value="Hamburg">Hamburg</option>
+                            <option value="Köln">Köln (Cologne)</option>
+                            <option value="Stuttgart">Stuttgart</option>
+                            <option value="Düsseldorf">Düsseldorf</option>
+                            <option value="Dortmund">Dortmund</option>
+                            <option value="Essen">Essen</option>
+                            <option value="Leipzig">Leipzig</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Ticket Type Dropdown -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">လက်မှတ်အမျိုးအစား (Ticket Type)</label>
+                    <select id="ticketType" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none">
+                        <option value="All">All (အားလုံး)</option>
+                        <option value="D-Ticket">D-Ticket only (Deutschlandticket ပါသူများအတွက်)</option>
+                        <option value="Express">Express only (ICE ကဲ့သို့ အမြန်ရထားများ)</option>
+                    </select>
+                </div>
+
+                <!-- Best Price & Date Range Options -->
+                <div class="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="priceOption" value="anyDate" checked class="w-4 h-4 text-red-600 focus:ring-red-500">
+                            <span class="text-sm font-medium text-slate-700">Best price any date (ရက်အကန့်အသတ်မရှိ ဈေးအသက်သာဆုံး)</span>
+                        </label>
+                    </div>
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="priceOption" value="dateRange" id="dateRangeRadio" class="w-4 h-4 text-red-600 focus:ring-red-500">
